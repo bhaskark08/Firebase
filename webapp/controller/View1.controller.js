@@ -27,7 +27,9 @@ sap.ui.define([
 			oDB.ref('Users/' + sUserId).push({
 				UserId: sUserId,
 				UserName: sUserName,
-				MailId: sEmailId
+				MailId: sEmailId,
+				Online: true,
+				UnreadMessages: 0
 			});
 			this.byId("MailId").setValue("");
 			this.byId("UserName").setValue("");
@@ -42,7 +44,12 @@ sap.ui.define([
 		},
 		fnCreateDialog: function (oObj) {
 			this._FromUser = "BHASKAR";
+			var sUser = this._FromUser;
 			this._ToUser = oObj.UserId;
+			if (this._FromUser === this._ToUser) {
+				alert("Please Select another User");
+			}
+
 			var oIP = new sap.m.Input({
 				value: "",
 				submit: function () {
@@ -57,9 +64,18 @@ sap.ui.define([
 						new sap.m.List({
 							items: {
 								path: "/Messages",
-								template: new sap.m.DisplayListItem({
-									label: "{Message}",
-									value: "From : {MessageFrom}"
+								template: new sap.m.StandardListItem({
+									title: "{Message}",
+									info: "From : {MessageFrom}",
+									infoState: {
+										path: 'MessageFrom',
+										formatter: function (sMessageFrom) {
+											if (sUser === sMessageFrom) {
+												return sap.ui.core.ValueState.Warning;
+											}
+											return sap.ui.core.ValueState.Success;
+										}
+									}
 								})
 							}
 						}),
@@ -98,11 +114,15 @@ sap.ui.define([
 				var oObj = oEle.val();
 				for (var key in oObj) {
 					for (var key2 in oObj[key]) {
-						aMsg.push(oObj[key][key2]);
+						var oUser = oObj[key][key2];
+						if ((oUser.MessageFrom === this._FromUser || oUser.MessageFrom === this._ToUser) &&
+							(oUser.MessageTo === this._FromUser || oUser.MessageTo === this._ToUser)) {
+							aMsg.push(oUser);
+						}
 					}
 				}
 				oMsgModel.setProperty("/Messages", aMsg);
-			});
+			}.bind(this));
 		},
 		fnDelete: function (oEvent) {
 			var oUserModel = this.getOwnerComponent().getModel("Users");

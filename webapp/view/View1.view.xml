@@ -19,7 +19,8 @@
 						</Panel>
 						<VBox id="Chat">
 							<List items="{/Users}" mode="Delete" delete="fnDelete">
-								<StandardListItem title="{UserId}" description="{UserName}" type="Active" press="fnStartChart"></StandardListItem>
+								<StandardListItem icon="{= ${Online} ? 'sap-icon://accept' : 'sap-icon://away' }" title="{UserId}" description="{UserName}" type="Active"
+									press="fnStartChart"></StandardListItem>
 							</List>
 						</VBox>
 					</content>

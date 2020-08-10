@@ -108,7 +108,11 @@ sap.ui.define([
 					var oObj = oEle.val();
 					for (var key in oObj) {
 						for (var key2 in oObj[key]) {
-							aUsers.push(oObj[key][key2]);
+							var oUsr = oObj[key][key2];
+							var sUsr = oUsr["UserId"];
+							if (sUsr !== "BHASKAR") {
+								aUsers.push(oObj[key][key2]);
+							}
 						}
 					}
 					oUserModel.setProperty("/Users", aUsers);
