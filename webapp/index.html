@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Chat</title>
+		<script id="sap-ui-bootstrap"
+			src="resources/sap-ui-core.js"
+			data-sap-ui-theme="sap_fiori_3"
+			data-sap-ui-resourceroots='{"chat.Chat": "./"}'
+			data-sap-ui-compatVersion="edge"
+			data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+			data-sap-ui-async="true"
+			data-sap-ui-frameOptions="trusted">
+		</script>
+<!--	<script>
+(function(t,a,l,k,j,s){
+s=a.createElement('script');s.async=1;s.src="https://cdn.talkjs.com/talk.js";a.head.appendChild(s)
+;k=t.Promise;t.Talk={v:3,ready:{then:function(f){if(k)return new k(function(r,e){l.push([f,r,e])});l
+.push([f])},catch:function(){return k&&new k()},c:l}};})(window,document,[]);
+</script> -->
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/6.2.4/firebase-app.js"></script>
+
+<!-- include only the Firebase features as you need -->
+<script defer src="https://www.gstatic.com/firebasejs/6.2.4/firebase-auth.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/6.2.4/firebase-firestore.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/6.2.4/firebase-messaging.js"></script>
+	</head>
+	<body class="sapUiBody">
+		<div data-sap-ui-component data-name="chat.Chat" data-id="container" data-settings='{"id" : "Chat"}'>
+			
+		</div>
+		<!-- container element in which TalkJS will display a chat UI -->
+
+	</body>
+</html>

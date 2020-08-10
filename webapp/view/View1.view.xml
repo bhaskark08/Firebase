@@ -1,0 +1,30 @@
+<mvc:View controllerName="chat.Chat.controller.View1" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
+	<Shell id="shell">
+		<App id="app">
+			<pages>
+				<Page id="page" title="{i18n>title}">
+					<content>
+						<Panel expandable="true" headerText="Create New User" width="auto" class="sapUiResponsiveMargin">
+							<content>
+								<VBox width="10rem">
+									<Label text="User Id"/>
+									<Input id="UserId"/>
+									<Label text="User Name"/>
+									<Input id="UserName"/>
+									<Label text="Mail ID"/>
+									<Input id="MailId"/>
+									<Button text="Create New User" press="fnCreateNewUser"/>
+								</VBox>
+							</content>
+						</Panel>
+						<VBox id="Chat">
+							<List items="{/Users}" mode="Delete" delete="fnDelete">
+								<StandardListItem title="{UserId}" description="{UserName}" type="Active" press="fnStartChart"></StandardListItem>
+							</List>
+						</VBox>
+					</content>
+				</Page>
+			</pages>
+		</App>
+	</Shell>
+</mvc:View>
