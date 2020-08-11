@@ -77,6 +77,7 @@ sap.ui.define([
 			var sUser = this.byId("CurrentUserId").getValue();
 			if (!sUser) {
 				alert("Please select Current User ID");
+				return;
 			}
 			this._FromUser = sUser;
 			this._ToUser = oObj.UserId;
