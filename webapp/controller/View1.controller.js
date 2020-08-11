@@ -9,7 +9,12 @@ sap.ui.define([
 			var oJSONModel = this.getOwnerComponent().getModel("Users");
 
 			this.getView().setModel(oJSONModel);
-
+			var that = this;
+			$(window).bind('beforeunload', function (event) {
+				if (that._LastUser) {
+					that.fnUpdateOnline(that._LastUser, false);
+				}
+			});
 			// Initialize Firebase
 
 			//	var firestore = firebase.firestore();
@@ -17,18 +22,44 @@ sap.ui.define([
 			//	oJSONModel.setProperty("/firestore", firestore);
 
 		},
-
+		fnMakeUserOnline: function (oEvent) {
+			if (this._LastUser) {
+				this.fnUpdateOnline(this._LastUser, false);
+			}
+			var sUer = oEvent.getSource().getValue();
+			if (sUer) {
+				this._LastUser = sUer;
+				this.fnUpdateOnline(sUer, true);
+			}
+		},
+		fnUpdateOnline: function (sUer, bOnline) {
+			var oUserModel = this.getOwnerComponent().getModel("Users");
+			var aUsers = oUserModel.getProperty("/Users") || [];
+			for (var i = 0, iLength = aUsers.length; i < iLength; i++) {
+				var oObj = aUsers[i];
+				if (oObj.UserId === sUer) {
+					firebase.database().ref('Users/' + sUer).set({
+						UserId: oObj.UserId,
+						UserName: oObj.UserName,
+						MailId: oObj.MailId,
+						Online: bOnline,
+						UnreadMessages: 0
+					});
+					break;
+				}
+			}
+		},
 		fnCreateNewUser: function () {
 			var oFireBaseModel = this.getOwnerComponent().getModel("firebase");
 			var oDB = oFireBaseModel.getProperty("/database");
 			var sUserId = this.byId("UserId").getValue();
 			var sUserName = this.byId("UserName").getValue();
 			var sEmailId = this.byId("MailId").getValue();
-			oDB.ref('Users/' + sUserId).push({
+			oDB.ref('Users/' + sUserId).set({
 				UserId: sUserId,
 				UserName: sUserName,
 				MailId: sEmailId,
-				Online: true,
+				Online: false,
 				UnreadMessages: 0
 			});
 			this.byId("MailId").setValue("");
@@ -43,11 +74,15 @@ sap.ui.define([
 			this.fnCreateDialog(OObj);
 		},
 		fnCreateDialog: function (oObj) {
-			this._FromUser = "BHASKAR";
-			var sUser = this._FromUser;
+			var sUser = this.byId("CurrentUserId").getValue();
+			if (!sUser) {
+				alert("Please select Current User ID");
+			}
+			this._FromUser = sUser;
 			this._ToUser = oObj.UserId;
 			if (this._FromUser === this._ToUser) {
 				alert("Please Select another User");
+				return;
 			}
 
 			var oIP = new sap.m.Input({
@@ -58,7 +93,7 @@ sap.ui.define([
 				}.bind(this)
 			});
 			var oDialog = new sap.m.Dialog({
-				title: "Chat with " + oObj.UserId + " " + oObj.UserName,
+				title: " " + oObj.UserId + " " + oObj.UserName,
 				content: new sap.m.VBox({
 					items: [
 						new sap.m.List({
@@ -112,6 +147,12 @@ sap.ui.define([
 			oDB.ref('CHAT/' + this._FromUser).on('value', function (oEle) {
 				var aMsg = [];
 				var oObj = oEle.val();
+				var oObjProc = oEle.val();
+				for (var key3 in oObjProc) {
+					if (key3 === this._FromUser) {
+						oObj = oObjProc[key3];
+					}
+				}
 				for (var key in oObj) {
 					for (var key2 in oObj[key]) {
 						var oUser = oObj[key][key2];
@@ -121,7 +162,13 @@ sap.ui.define([
 						}
 					}
 				}
+				aMsg.sort(function (a, b) {
+					var dateA = new Date(a.dateTime),
+						dateB = new Date(b.dateTime);
+					return dateA - dateB;
+				});
 				oMsgModel.setProperty("/Messages", aMsg);
+				oMsgModel.updateBindings(true);
 			}.bind(this));
 		},
 		fnDelete: function (oEvent) {
@@ -138,7 +185,7 @@ sap.ui.define([
 			var sUserId = this._FromUser;
 			var sToUser = this._ToUser;
 			var today = new Date();
-
+			var sDateAndTime = today.toUTCString();
 			var dDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 			var sTime = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 			oDB.ref('CHAT/' + sUserId + "/" + dDate + "T" + sTime).push({
@@ -146,14 +193,16 @@ sap.ui.define([
 				MessageTo: sToUser,
 				Message: sMessage,
 				Time: sTime,
-				Date: dDate
+				Date: dDate,
+				dateTime: sDateAndTime
 			});
 			oDB.ref('CHAT/' + sToUser + "/" + dDate + "T" + sTime).push({
 				MessageFrom: sUserId,
 				MessageTo: sToUser,
 				Message: sMessage,
 				Time: sTime,
-				Date: dDate
+				Date: dDate,
+				dateTime: sDateAndTime
 			});
 		}
 	});

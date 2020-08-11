@@ -1,9 +1,17 @@
-<mvc:View controllerName="chat.Chat.controller.View1" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
+<mvc:View controllerName="chat.Chat.controller.View1" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" displayBlock="true" xmlns="sap.m">
 	<Shell id="shell">
 		<App id="app">
 			<pages>
 				<Page id="page" title="{i18n>title}">
 					<content>
+						<VBox width="10rem">
+							<Label text="Current User ID" required="true"/>
+							<Input id="CurrentUserId" change="fnMakeUserOnline" showSuggestion="true" suggestionItems="{/Users}">
+								<suggestionItems>
+									<core:Item text="{UserId}"/>
+								</suggestionItems>
+							</Input>
+						</VBox>
 						<Panel expandable="true" headerText="Create New User" width="auto" class="sapUiResponsiveMargin">
 							<content>
 								<VBox width="10rem">
@@ -18,9 +26,10 @@
 							</content>
 						</Panel>
 						<VBox id="Chat">
-							<List items="{/Users}" mode="Delete" delete="fnDelete">
-								<StandardListItem icon="{= ${Online} ? 'sap-icon://accept' : 'sap-icon://away' }" title="{UserId}" description="{UserName}" type="Active"
-									press="fnStartChart"></StandardListItem>
+							<!-- mode="Delete" delete="fnDelete"-->
+							<List items="{ path: '/Users', sorter: { path: 'OnlineText', descending: true, group: true } }">
+								<StandardListItem icon="{= ${Online} ? './images/online.jpg' : './images/offline.jpg' }" title="{UserId}" description="{UserName}"
+									type="Active" press="fnStartChart"></StandardListItem>
 							</List>
 						</VBox>
 					</content>

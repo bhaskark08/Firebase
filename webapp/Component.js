@@ -107,13 +107,12 @@ sap.ui.define([
 					var aUsers = [];
 					var oObj = oEle.val();
 					for (var key in oObj) {
-						for (var key2 in oObj[key]) {
-							var oUsr = oObj[key][key2];
-							var sUsr = oUsr["UserId"];
-							if (sUsr !== "BHASKAR") {
-								aUsers.push(oObj[key][key2]);
-							}
-						}
+						//	for (var key2 in oObj[key]) {
+						//	var oUsr = oObj[key][key2];
+						var oUsr = oObj[key];
+						oUsr["OnlineText"] = (oUsr["Online"] ? "Online" : "Offline");
+						aUsers.push(oUsr);
+						//	}
 					}
 					oUserModel.setProperty("/Users", aUsers);
 				});
