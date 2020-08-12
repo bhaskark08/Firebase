@@ -1,6 +1,8 @@
 sap.ui.define([
-	"chat/Chat/controller/BaseController"
-], function (Controller) {
+	"chat/Chat/controller/BaseController",
+	"sap/m/MessageBox",
+	"sap/m/MessageToast"
+], function (Controller, MessageBox, MessageToast) {
 	"use strict";
 
 	return Controller.extend("chat.Chat.controller.Home", {
@@ -52,7 +54,7 @@ sap.ui.define([
 		fnNavChat: function () {
 			var sUser = this.getOwnerComponent().getModel("Users").getProperty("/CurrentUser");
 			if (!sUser) {
-				alert("Please select Current User ID");
+				MessageBox.error("Please select Current User ID");
 				return;
 			}
 			this.getOwnerComponent().getRouter().navTo("Chat");

@@ -5,7 +5,8 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"chat/Chat/firebase",
 	"chat/Chat/model/firebaseDB",
-], function (UIComponent, Device, models, JSONModel, Firebase, firebaseDB) {
+	"sap/m/MessageBox"
+], function (UIComponent, Device, models, JSONModel, Firebase, firebaseDB, MessageBox) {
 	"use strict";
 
 	return UIComponent.extend("chat.Chat.Component", {
@@ -57,8 +58,8 @@ sap.ui.define([
 			// Login the user anonymously
 			fireAuth.signInAnonymously().catch(function (error) {
 				// Handle Errors here.
-				alert(error.code);
-				alert(error.message);
+				MessageBox.error(error.code);
+				MessageBox.error(error.message);
 			});
 
 			firebase.auth().onAuthStateChanged(function (user) {

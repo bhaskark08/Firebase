@@ -1,6 +1,8 @@
 sap.ui.define([
-	"chat/Chat/controller/BaseController"
-], function (Controller) {
+	"chat/Chat/controller/BaseController",
+	"sap/m/MessageBox",
+	"sap/m/MessageToast"
+], function (Controller, MessageBox, MessageToast) {
 	"use strict";
 
 	return Controller.extend("chat.Chat.controller.App", {

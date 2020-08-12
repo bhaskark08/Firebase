@@ -1,7 +1,9 @@
 sap.ui.define([
 	"chat/Chat/controller/BaseController",
-	"sap/ui/model/json/JSONModel"
-], function (Controller, JSONModel) {
+	"sap/ui/model/json/JSONModel",
+	"sap/m/MessageBox",
+	"sap/m/MessageToast"
+], function (Controller, JSONModel, MessageBox, MessageToast) {
 	"use strict";
 
 	return Controller.extend("chat.Chat.controller.View1", {
@@ -28,13 +30,13 @@ sap.ui.define([
 		fnCreateDialog: function (oObj) {
 			var sUser = this.getOwnerComponent().getModel("Users").getProperty("/CurrentUser");
 			if (!sUser) {
-				alert("Please select Current User ID");
+				MessageBox.error("Please select Current User ID");
 				return;
 			}
 			this._FromUser = sUser;
 			this._ToUser = oObj.UserId;
 			if (this._FromUser === this._ToUser) {
-				alert("Please Select another User");
+				MessageBox.error("Message to same user not allowed,Please Select another User");
 				return;
 			}
 
