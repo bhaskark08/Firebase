@@ -31,9 +31,19 @@ sap.ui.define([
 			// Import Firebase in the sap.ui.define
 			// set the firebase model by calling the initializeFirebase function in the Firebase.js file
 			this.setModel(Firebase.initializeFirebase(), "firebase");
+			var oStorage = jQuery.sap.storage(jQuery.sap.storage.Type.local);
+			//Get data from Storage
+			var suser = oStorage.get("CurrentUser");
+			if (suser) {
+				//Set data into Storage
+				oStorage.put("CurrentUser", suser);
+			} else {
+				suser = "";
+			}
 
 			this.setModel(new JSONModel({
-				Users: []
+				Users: [],
+				CurrentUser: suser
 			}), "Users");
 
 			this.getModel("Users").setSizeLimit(20000);
@@ -102,7 +112,8 @@ sap.ui.define([
 			try {
 				var oUserModel = this.getModel("Users");
 				var oDB = oFireBaseModel.getProperty("/database");
-
+				var sUer = oUserModel.getProperty("/CurrentUser");
+				var bInitialLoad = true;
 				oDB.ref('Users').on('value', function (oEle) {
 					var aUsers = [];
 					var oObj = oEle.val();
@@ -115,6 +126,23 @@ sap.ui.define([
 						//	}
 					}
 					oUserModel.setProperty("/Users", aUsers);
+					if (sUer && bInitialLoad) {
+						bInitialLoad = false;
+						for (var i = 0, iLength = aUsers.length; i < iLength; i++) {
+							var oObjUser = aUsers[i];
+							if (oObjUser.UserId === sUer) {
+								oDB.ref('Users/' + sUer).set({
+									UserId: oObjUser.UserId,
+									UserName: oObjUser.UserName,
+									MailId: oObjUser.MailId,
+									Online: true,
+									UnreadMessages: 0
+								});
+								break;
+							}
+						}
+					}
+
 				});
 				/*	collRefUsers.get().then(
 						function (collection) {
