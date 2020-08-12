@@ -1,4 +1,5 @@
 {
+	"gcm_sender_id": "174598233875",
 	"_version": "1.12.0",
 	"sap.app": {
 		"id": "chat.Chat",

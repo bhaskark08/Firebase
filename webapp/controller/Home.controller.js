@@ -23,14 +23,14 @@ sap.ui.define([
 			if (suser) {
 				this.fnUpdateOnline(suser, false);
 			}
-			var sUer = oEvent.getSource().getValue();
+			var sUer = oEvent.getSource().getValue() || "";
 			if (sUer) {
-				this.getOwnerComponent().getModel("Users").setProperty("/CurrentUser", sUer);
-				this._FromUser = sUer;
 				this.fnUpdateOnline(sUer, true);
 				//Set data into Storage
-				oStorage.put("CurrentUser", sUer);
 			}
+			this.getOwnerComponent().getModel("Users").setProperty("/CurrentUser", sUer);
+			this._FromUser = sUer;
+			oStorage.put("CurrentUser", sUer);
 		},
 
 		fnCreateNewUser: function () {

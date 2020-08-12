@@ -5,8 +5,9 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"chat/Chat/firebase",
 	"chat/Chat/model/firebaseDB",
+	"chat/Chat/model/firebase-messaging",
 	"sap/m/MessageBox"
-], function (UIComponent, Device, models, JSONModel, Firebase, firebaseDB, MessageBox) {
+], function (UIComponent, Device, models, JSONModel, Firebase, firebaseDB, Fmessaging, MessageBox) {
 	"use strict";
 
 	return UIComponent.extend("chat.Chat.Component", {
@@ -70,35 +71,35 @@ sap.ui.define([
 					console.log("User: ", user);
 
 					this.getUserData();
-					/*
-										// CLOUD MESSAGING FCM
-										// Since we are logged in now we will ask the user permission to send notifications
-										// Create a FCM reference
-										var messaging = this.getModel("firebase").getProperty("/fcm");
 
-										//FCM ask permission
-										messaging.requestPermission().then(function () {
-											console.log("Have permission");
-											return messaging.getToken();
-										}).then(function (token) {
-											console.log(token);
-										}).catch(function (err) {
-											console.log("Error occured");
-										});
+					/*// CLOUD MESSAGING FCM
+					// Since we are logged in now we will ask the user permission to send notifications
+					// Create a FCM reference
+					var messaging = this.getModel("firebase").getProperty("/fcm");
 
-										// Show message in foreground (if desired)
-										messaging.onMessage(function (payload) {
-											console.log("Message received. ", payload);
-											var notification = JSON.parse(payload.data.notification);
-											var notificationTitle = notification.title;
-											var notificationOptions = {
-												body: notification.body,
-												icon: notification.icon,
-											};
-											var notification = new Notification(notificationTitle, notificationOptions);
-											return notification;
-										});
-					*/
+					// Add the public key generated from the console here.
+					messaging.usePublicVapidKey("BHuyfhMqbXzEqOQk3EnDczjizQRQZ2zhjiah1ktNNS7thx7c3V5s-Mwi9O5yGOUnbrbhByJx6YIJ0_QCa_qmJqc");
+					//FCM ask permission
+
+					messaging.requestPermission().then(function () {
+						return messaging.getToken();
+					}).then(function (token) {
+						//	alert(token);
+					}).catch(function (err) {
+						//	alert(err);
+					});
+					// Show message in foreground (if desired)
+					messaging.onMessage(function (payload) {
+						alert("Message received. ", payload);
+						var notification = JSON.parse(payload.data.notification);
+						var notificationTitle = notification.title;
+						var notificationOptions = {
+							body: notification.body,
+							icon: notification.icon,
+						};
+						var notification = new Notification(notificationTitle, notificationOptions);
+						return notification;
+					});*/
 				} else {
 					// User is signed out.
 				}
